@@ -63,3 +63,9 @@ group :test do
 end
 
 gem "guard", "~> 2.19"
+
+gem "devise", "~> 4.9"
+
+gem "letter_opener", "~> 1.10"
+
+gem "omniauth-twitter", "~> 1.4"

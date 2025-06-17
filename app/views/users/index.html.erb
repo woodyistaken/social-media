@@ -1,0 +1,41 @@
+<%=link_to "Sign out",destroy_user_session_path, data:{"turbo-method": :delete}%>
+<%=link_to "Posts",posts_path%>
+<%=link_to "Your account",current_user%>
+
+<h1>All users</h1>
+<%@users.order("id").each do |user|%>
+  <%if user==current_user%>
+    <%next%>
+  <%end%>
+  <%=user.email%>
+  <div data-controller="follow" style="display:inline">
+    <form action=<%=change_follows_path%> method="POST" style="display:inline">
+      <input type="hidden" value=<%=user.email%> name="friend">
+      <input type="hidden" value=<%=current_user.email%> name="user">
+      <button data-follow-target="followButton" data-action="follow#follow" value="follow" name="button">
+        <%if user.followers.include?(current_user)%>
+          <%if Follow.where(follower:current_user).where(followed:user).take.status=="pending"%>
+            Pending
+          <%else%>
+            Followed
+          <%end%>
+        <%else%>
+        Follow
+        <%end%>
+      </button>
+      <button data-follow-target="acceptButton" data-action="follow#accept" value="accept" name="button">
+        
+        <%if current_user.followers.include?(user)%>
+          <%if Follow.where(follower:user).where(followed:current_user).take.status=="pending"%>
+            Accept
+          <%else%>
+            Accepted
+          <%end%>
+        <%else%>
+          No Request
+        <%end%>
+      </button>
+    </form>
+  </div>
+  <br>
+<%end%>

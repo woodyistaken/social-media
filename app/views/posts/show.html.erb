@@ -1,0 +1,28 @@
+<%=link_to "Sign out",destroy_user_session_path, data:{"turbo-method": :delete}%>
+<%=link_to "Posts",posts_path%>
+
+<h3><%=@post.body%></h3>
+<p>Created by <%=@post.user.email%></p>
+<p>Likes: <%=@post.likes.count%></p>
+<%if !current_user.likes.where(post:@post).empty?%>
+  <%=form_with url:"/posts/likes/#{@post.id}", method: :delete do |form|%>
+    <%=form.submit "Unlike"%>
+  <%end%>
+<%else%>
+  <%=form_with url:"/posts/likes/#{@post.id}" do |form|%>
+    <%=form.submit "Like"%>
+  <%end%>
+<%end%>
+<%=form_with model: Comment.new do |form|%>
+<%=form.hidden_field :post_id,value:@post.id%>
+<%=form.label :body, "Comment"%>
+<%=form.text_field :body%>
+<%=form.submit "Submit"%>
+<%end%>
+
+
+<ul>
+  <%@post.comments.each do |comment|%>
+  <li><h4><%=comment.body%></h4><p>Comment by:<%=comment.user.email%></p></li>
+  <%end%>
+</ul>
